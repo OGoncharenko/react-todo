@@ -7,8 +7,8 @@ function App() {
   return (
     <>
       <h1 className="header">Todo List</h1>
-      <TodoList />
       <AddTodoForm />
+      <TodoList />
     </>
   );
 }
