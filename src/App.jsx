@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import AddTodoForm from "./components/AddTodoForm";
 import TodoList from "./components/TodoList";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -67,6 +68,31 @@ function App() {
     }
   };
 
+  const removeTodo = async (id) => {
+    const options = {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_AIRTABLE_API_TOKEN}`,
+      },
+    };
+
+    try {
+      const response = await fetch(`${url}/${id}`, options);
+
+      if (!response.ok) {
+        const message = `Error: ${response.status}`;
+        throw new Error(message);
+      }
+
+      const removeTodoList = todoList.filter((todoListItem) => {
+        return todoListItem.id !== id;
+      });
+      setTodoList(removeTodoList);
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -77,23 +103,29 @@ function App() {
     }
   }, [todoList, isLoading]);
 
-  const removeTodo = (id) => {
-    const newTodoList = todoList.filter((todoListItem) => {
-      return todoListItem.id !== id;
-    });
-    setTodoList(newTodoList);
-  };
-
   return (
-    <>
-      <h1 className="header">Todo List</h1>
-      <AddTodoForm onAddTodo={addTodo} />
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
-      )}
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <h1 className="header">Todo List</h1>
+              <AddTodoForm onAddTodo={addTodo} />
+              {isLoading ? (
+                <p>Loading...</p>
+              ) : (
+                <>
+                  <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
+                  <Link to="/new">New Todo list</Link>
+                </>
+              )}
+            </>
+          }
+        />
+        <Route path="/new" element={<h1>New Todo List</h1>} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
