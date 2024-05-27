@@ -1,41 +1,99 @@
-#root {
-  max-width: 1280px;
+* {
+  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+  color: darkslategray;
+}
+
+body {
+  background: steelblue;
+  max-width: auto;
+  padding: 1rem;
   margin: 0 auto;
+}
+
+.header {
+  color: darkslategray;
+  margin: 0 auto;
+}
+
+#root {
+  background-color: aliceblue;
+  max-width: fit-content;
+  margin: 4rem auto;
   padding: 2rem;
+  border-radius: 0.5em;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.btn {
+  background: rgb(220,240,254);
+  border: 1px solid darkslategray;
+  color: darkslategray;
+  padding: 0.25em 1em;
+  border-radius: 0.25em;
+  cursor: pointer;
+  outline: none;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.btn:hover {
+  background: hsl(200, 100%, 50%, 0.3);
+}
+
+@media (max-width: 1200px) {
+  #root {
+    padding: 1.5rem;
+    width: -webkit-fill-available;
   }
-  to {
-    transform: rotate(360deg);
-  }
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  .btn {
+    padding: 0.3em 0.75em;
   }
 }
 
-.card {
-  padding: 2em;
+@media (max-width: 992px) {
+  #root {
+    padding: 1rem;
+    margin: 4rem;
+    width:max-content;
+  }
+
+  .btn {
+    padding: 0.25em 0.5em;
+  }
 }
 
-.read-the-docs {
-  color: #888;
+@media (max-width: 768px) {
+  .add-todo-form {
+    flex-direction: column;
+  }
+
+  .btn {
+    padding: 0.25em 0.5em;
+  }
+
+  #root {
+    padding: 0.5rem;
+  }
+
+  .input-todo {
+    padding: 0.25em;
+  }
+}
+
+@media (max-width: 576px) {
+  body {
+    padding: 0.5rem;
+    width:max-content;
+  }
+
+  .header {
+    font-size: 1.5rem;
+  }
+
+  .btn {
+    padding: 0.25em 0.5em;
+  }
+
+  .input-todo {
+    padding: 0.25em;
+  }
 }
