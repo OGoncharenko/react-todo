@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import style from './InputWithLabel.module.css';
+import PropTypes from 'prop-types';
 
 const InputWithLabel = ({
   type = "text",
@@ -8,7 +9,6 @@ const InputWithLabel = ({
   value,
   onChange,
   isFocused,
-  children,
 }) => {
 
   const inputRef = useRef();
@@ -20,18 +20,24 @@ const InputWithLabel = ({
   });
 
   return (
-    <>
-      <label htmlFor={id} className={style["input-todo-title"]}>{children}</label>
-      <input className={style["input-todo"]}
-        ref={inputRef}
-        type={type}
-        id={id}
-        value={value}
-        name={name}
-        onChange={onChange}
-      />
-    </>
+    <input className={style["input-todo"]}
+      ref={inputRef}
+      type={type}
+      id={id}
+      value={value}
+      name={name}
+      onChange={onChange}
+    />
   );
+};
+
+InputWithLabel.propTypes = {
+  type: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  isFocused: PropTypes.bool.isRequired,
 };
 
 export default InputWithLabel;
