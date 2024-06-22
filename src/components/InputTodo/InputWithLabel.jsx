@@ -13,12 +13,6 @@ const InputWithLabel = ({
 
   const inputRef = useRef();
 
-  useEffect(() => {
-    if (isFocused && inputRef.current) {
-      inputRef.current.focus();
-    }
-  });
-
   return (
     <input className={style["input-todo"]}
       ref={inputRef}
