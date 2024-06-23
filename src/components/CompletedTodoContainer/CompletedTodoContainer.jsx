@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import TodoList from "../TodoList/TodoList";
 import { Link } from "react-router-dom";
 
-function CompletedTodoContainex() {
+const CompletedTodoContainer = () => {
     const [todoList, setTodoList] = useState([]);
     const url = `https://api.airtable.com/v0/${
         import.meta.env.VITE_AIRTABLE_BASE_ID
@@ -119,4 +119,4 @@ function CompletedTodoContainex() {
   )
 }
 
-export default CompletedTodoContainex;
+export default CompletedTodoContainer;

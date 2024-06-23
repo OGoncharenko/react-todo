@@ -1,15 +1,15 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TodoContainer from "./components/TodoContainer/TodoContainer";
-import CompletedTodoContainex from "./components/CompletedTodoContainer/CompletedTodoContainer";
+import CompletedTodoContainer from "./components/CompletedTodoContainer/CompletedTodoContainer";
 
-function App() {
+const App = () => {
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={ <TodoContainer /> } />
-        <Route path="/completed" element={<CompletedTodoContainex />} />
+        <Route path="/completed" element={<CompletedTodoContainer />} />
       </Routes>
     </BrowserRouter>
   );
