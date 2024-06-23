@@ -1,6 +1,7 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TodoContainer from "./components/TodoContainer/TodoContainer";
+import CompletedTodoContainex from "./components/CompletedTodoContainer/CompletedTodoContainer";
 
 function App() {
 
@@ -8,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={ <TodoContainer /> } />
-        <Route path="/new" element={<h1>New Todo List</h1>} />
+        <Route path="/completed" element={<CompletedTodoContainex />} />
       </Routes>
     </BrowserRouter>
   );

@@ -38,13 +38,13 @@ function TodoContainer() {
       },
     };
     try {
-      const response = await fetch(
+    const response = await fetch(
         `${url}?view=Grid%20view&sort[0][field]=createdTime&sort[0][direction]=${
           isAscending ? "asc" : "desc"
-        }&filterByFormula=SEARCH("${search}", {Title})`,
+        }&filterByFormula=AND(SEARCH("${search}", {Title}), {completedAt} = "")`,
         options
       );
-
+      
       if (!response.ok) {
         const message = `Error: ${response.status}`;
         throw new Error(message);
@@ -57,6 +57,7 @@ function TodoContainer() {
           title: todo.fields.Title,
           createdTime: todo.fields.createdTime,
           completedAt: !!todo.fields.completedAt,
+          dueDate: todo.fields.dueDate,
         };
       });
       setTodoList(todos);
@@ -91,7 +92,7 @@ function TodoContainer() {
         Authorization: `Bearer ${import.meta.env.VITE_AIRTABLE_API_TOKEN}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ fields: { Title: newTodo.title } }),
+      body: JSON.stringify({ fields: { Title: newTodo.title, dueDate: newTodo.dueDate } }),
     };
 
     try {
@@ -109,6 +110,7 @@ function TodoContainer() {
         title: addTodoData.fields.Title,
         createdTime: addTodoData.fields.createdTime,
         completedAt: false,
+        dueDate: addTodoData.fields.dueDate,
       };
 
       const updatedTodoList = [...todoList, newTodo];
@@ -177,16 +179,50 @@ function TodoContainer() {
       }
 
       const completeTodoData = await response.json();
-      const updatedTodoList = todoList.map((todo) =>
-        todo.id === id
-          ? { ...todo, completedAt: !!completeTodoData.fields.completedAt }
-          : todo
-      );
+
+    const updatedTodoList = todoList.filter((todo) => todo.id !== id)
       setTodoList(updatedTodoList);
     } catch (error) {
       console.error("Error completing todo", error);
     }
   };
+
+  const updateTodo = async (id, title) => {
+    const updatedTodo = todoList.find((todo) => {
+      return todo.id === id;
+    });
+    const options = {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_AIRTABLE_API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        fields: {
+            Title: title
+        },
+      }),
+    };
+
+    try {
+      const response = await fetch(`${url}/${id}`, options);
+
+      if (!response.ok) {
+        const message = `Error: ${response.status}`;
+        throw new Error(message);
+      }
+
+      const updateTodoData = await response.json();
+      const updatedTodoList = todoList.map((todo) =>
+        todo.id === id
+          ? { ...todo, title: updateTodoData.fields.Title }
+          : todo
+      );
+      setTodoList(updatedTodoList);
+    } catch (error) {
+      console.error("Error", error);
+    }
+  }
 
   const handleSearch = (event) => {
     setSearchValue(event.target.value);
@@ -204,6 +240,7 @@ function TodoContainer() {
       ) : (
         <>
           <input
+            className="search-input"
             type="search"
             onChange={handleSearch}
             value={searchValue}
@@ -216,10 +253,12 @@ function TodoContainer() {
             todoList={todoList}
             onRemoveTodo={removeTodo}
             onCompleteTodo={completeTodo}
+            onUpdateTodo={updateTodo}
           />
         </>
       )}
       <AddTodoForm onAddTodo={addTodo} />
+      <Link to="/completed">Completed todos</Link>
     </>
   );
 }
