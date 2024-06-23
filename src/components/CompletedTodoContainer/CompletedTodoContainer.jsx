@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import TodoList from "../TodoList/TodoList";
 import { Link } from "react-router-dom";
+import { url } from "../../modules/api.module";
 
 const CompletedTodoContainer = () => {
     const [todoList, setTodoList] = useState([]);
-    const url = `https://api.airtable.com/v0/${
-        import.meta.env.VITE_AIRTABLE_BASE_ID
-      }/${import.meta.env.VITE_TABLE_NAME}`;
 
       const fetchData = async (search = "") => {
         const options = {
@@ -113,7 +111,7 @@ const CompletedTodoContainer = () => {
                 onRemoveTodo={removeTodo}
                 onCompleteTodo={unCompleteTodo}
             />
-        <Link to="/">Uncompleted todos</Link>
+        <Link to="/">Back to dashboard</Link>
     </>
     
   )

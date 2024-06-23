@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AddTodoForm from "../AddTodo/AddTodoForm";
 import TodoList from "../TodoList/TodoList";
-import { Link } from "react-router-dom";
+import { url } from "../../modules/api.module";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -24,11 +24,8 @@ function TodoContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [isAscending, setIsAscending] = useState(true);
+  const [isTitleAscending, setIsTitleAscending] = useState(true);
   const debouncedSearchValue = useDebounce(searchValue, 500);
-
-  const url = `https://api.airtable.com/v0/${
-    import.meta.env.VITE_AIRTABLE_BASE_ID
-  }/${import.meta.env.VITE_TABLE_NAME}`;
 
   const fetchData = async (search = "") => {
     const options = {
@@ -86,13 +83,20 @@ function TodoContainer() {
   }, [debouncedSearchValue]);
 
   const addTodo = async (newTodo) => {
+    const fields = {
+      Title: newTodo.title
+    }
+    if (!!newTodo.dueDate) {
+      fields['dueDate'] = newTodo.dueDate
+    }
+
     const options = {
       method: "POST",
       headers: {
         Authorization: `Bearer ${import.meta.env.VITE_AIRTABLE_API_TOKEN}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ fields: { Title: newTodo.title, dueDate: newTodo.dueDate } }),
+      body: JSON.stringify({ fields: fields }),
     };
 
     try {
@@ -114,11 +118,6 @@ function TodoContainer() {
       };
 
       const updatedTodoList = [...todoList, newTodo];
-      updatedTodoList.sort((a, b) => {
-        const dateA = new Date(a.createdTime);
-        const dateB = new Date(b.createdTime);
-        return isAscending ? dateA - dateB : dateB - dateA;
-      });
 
       setTodoList(updatedTodoList);
     } catch (error) {
@@ -178,8 +177,6 @@ function TodoContainer() {
         throw new Error(message);
       }
 
-      const completeTodoData = await response.json();
-
     const updatedTodoList = todoList.filter((todo) => todo.id !== id)
       setTodoList(updatedTodoList);
     } catch (error) {
@@ -188,9 +185,6 @@ function TodoContainer() {
   };
 
   const updateTodo = async (id, title) => {
-    const updatedTodo = todoList.find((todo) => {
-      return todo.id === id;
-    });
     const options = {
       method: "PATCH",
       headers: {
@@ -232,9 +226,20 @@ function TodoContainer() {
     setIsAscending(!isAscending);
   };
 
+  const toggleTitleOrder = () => {
+    const sortedTodoList = [...todoList].sort((a, b) => {
+      const titleA = a.title.toLowerCase();
+      const titleB = b.title.toLowerCase();
+      if (titleA < titleB) return isTitleAscending ? -1 : 1;
+      if (titleA > titleB) return isTitleAscending ? 1 : -1;
+      return 0;
+    });
+    setTodoList(sortedTodoList);
+    setIsTitleAscending(!isTitleAscending);
+  }
+
   return (
     <>
-      <h1 className="header">Todo List</h1>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
@@ -249,6 +254,9 @@ function TodoContainer() {
           <button onClick={toggleOrder}>
             Sort by Date ({isAscending ? "Ascending" : "Descending"})
           </button>
+          <button onClick={toggleTitleOrder}>
+            Sort by name ({isTitleAscending ? "A-Z" : "Z-A"})
+          </button>
           <TodoList
             todoList={todoList}
             onRemoveTodo={removeTodo}
@@ -258,7 +266,6 @@ function TodoContainer() {
         </>
       )}
       <AddTodoForm onAddTodo={addTodo} />
-      <Link to="/completed">Completed todos</Link>
     </>
   );
 }
