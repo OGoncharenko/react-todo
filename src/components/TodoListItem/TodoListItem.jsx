@@ -1,12 +1,30 @@
-import React from "react";
-import style from './TodoListItem.module.css';
+import React, { useState } from "react";
 import PropTypes from 'prop-types';
 
-const TodoListItem = ({ todo, onRemoveTodo }) => {
+const TodoListItem = ({ todo, onRemoveTodo, onCompleteTodo, onUpdateTodo }) => {
+
+  const [todoTitle, setTodoTitle] = useState(todo.title);
+  const [isEdit, setIsEdit] = useState(false);
+
+  const handleTitleChange = (event) => {
+    setTodoTitle(event.target.value);
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      setIsEdit(false);
+      onUpdateTodo(todo.id, todoTitle)
+    }
+  }
+
   return (
     <>
-      <li className={style.ListItem}>
-        {todo.title}
+      <li className="list-item">
+        <input type="checkbox" onChange={() => onCompleteTodo(todo.id)} checked={todo.completedAt}  />
+        {isEdit ? <input type="text" value={todoTitle} onChange={handleTitleChange} onKeyDown={handleKeyDown}/> : todo.title}
+        <div>
+          {todo.dueDate}
+        </div>
         <button className="btn"
           onClick={() => {
             onRemoveTodo(todo.id);
@@ -14,6 +32,14 @@ const TodoListItem = ({ todo, onRemoveTodo }) => {
         >
           Remove
         </button>
+
+        {!isEdit && <button className="edit-btn"
+          onClick={() => {
+            setIsEdit(true);
+          }}
+        >
+          Edit
+        </button> }
       </li>
     </>
   );
@@ -24,7 +50,9 @@ TodoListItem.propTypes = {
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired
   }),
-  onRemoveTodo: PropTypes.func.isRequired,
+  onRemoveTodo: PropTypes.func,
+  onCompleteTodo: PropTypes.func,
+  onUpdateTodo: PropTypes.func,
 };
 
 export default TodoListItem;

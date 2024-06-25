@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import style from './InputWithLabel.module.css';
 import PropTypes from 'prop-types';
 
 const InputWithLabel = ({
@@ -13,14 +12,8 @@ const InputWithLabel = ({
 
   const inputRef = useRef();
 
-  useEffect(() => {
-    if (isFocused && inputRef.current) {
-      inputRef.current.focus();
-    }
-  });
-
   return (
-    <input className={style["input-todo"]}
+    <input className="input-todo"
       ref={inputRef}
       type={type}
       id={id}

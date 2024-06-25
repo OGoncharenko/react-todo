@@ -1,11 +1,13 @@
 * {
   font-family: Arial, Helvetica, sans-serif;
   box-sizing: border-box;
-  color: darkslategray;
+  list-style: none;
 }
 
 body {
-  background: steelblue;
+  /* background: steelblue; */
+  color: darkslategray;
+  display: flex;
   max-width: auto;
   padding: 1rem;
   margin: 0 auto;
@@ -14,14 +16,6 @@ body {
 .header {
   color: darkslategray;
   margin: 0 auto;
-}
-
-#root {
-  background-color: aliceblue;
-  max-width: fit-content;
-  margin: 4rem auto;
-  padding: 2rem;
-  border-radius: 0.5em;
 }
 
 .btn {
@@ -36,6 +30,29 @@ body {
 
 .btn:hover {
   background: hsl(200, 100%, 50%, 0.3);
+}
+
+.list-item {
+  color:darkslategray;
+  margin: 10px;
+  padding: 0.5px;
+}
+
+.list-item button {
+  margin-left: 1em;
+}
+
+.input-todo {
+  background-color:hsl(205, 89%, 93%);
+  border-radius: 0.25em;
+  outline: none;
+  padding: 0.25em 0.5em;
+}
+
+.add-todo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 @media (max-width: 1200px) {
