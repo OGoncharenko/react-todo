@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import TodoList from "../TodoList/TodoList";
 import { Link } from "react-router-dom";
 import { url } from "../../modules/api.module";
+import "/src/App.css";
+import style from '../TodoContainer/TodoContainer.module.css'
 
 const CompletedTodoContainer = () => {
     const [todoList, setTodoList] = useState([]);
@@ -105,16 +107,17 @@ const CompletedTodoContainer = () => {
       }, []);
 
   return (
-    <>
+    <div className={style["container"]} style={{marginLeft: 0}}>
+      <div className={style["control-container"]}></div>
         <TodoList
                 todoList={todoList}
                 onRemoveTodo={removeTodo}
                 onCompleteTodo={unCompleteTodo}
             />
         <Link to="/">Back to dashboard</Link>
-    </>
-    
+    </div>
   )
 }
 
 export default CompletedTodoContainer;
+

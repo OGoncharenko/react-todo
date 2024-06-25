@@ -1,0 +1,72 @@
+.list-item {
+    background-color: steelblue;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    height: 150px;
+    border-radius: 0.5em;
+    margin: 10px;
+}
+
+.list-item-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.5em;
+}
+
+.list-item-due-date {
+    font-size: 0.5em;
+    color: #253131;
+    margin: 10px;
+}
+
+.list-item-complete {
+    font-size: 0.5em;
+    color: #253131;
+    margin: 5px;
+}
+
+.list-item-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit-btn {
+    background: rgb(220,240,254);
+    border: 1px solid darkslategray;
+    color: darkslategray;
+    border-radius: 0.25em;
+    width: 30%;
+    margin: 10px;
+    height: 30px;
+    cursor: pointer;
+    outline: none;
+}
+
+.remove-btn {
+    background: rgb(220,240,254);
+    border: 1px solid darkslategray;
+    color: darkslategray;
+    border-radius: 0.25em;
+    width: 30%;
+    margin: 10px;
+    height: 30px;
+    cursor: pointer;
+    outline: none;
+}
+
+@media (max-width: 768px) {
+    .list {
+        grid-template-columns: 1fr;
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .list-item {
+        grid-template-columns: 1fr 1fr;
+    }
+}
