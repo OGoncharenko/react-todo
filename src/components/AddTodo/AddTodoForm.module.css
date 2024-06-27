@@ -1,0 +1,36 @@
+.add-todo-form {
+    grid-area: add-todo;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: steelblue;
+    height: 300px;
+    border-radius: 0.5em;
+    margin: 25px;
+    padding: 15px;
+}
+
+.input-due-date {
+    width: 90%;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 0.25em;
+    height: 30px;
+}
+
+.add-btn {
+    background: rgb(220,240,254);
+    border: 1px solid darkslategray;
+    color: darkslategray;
+    border-radius: 0.25em;
+    width: 30%;
+    margin: 10px;
+    height: 30px;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .btn:hover {
+    background: hsl(200, 100%, 50%, 0.3);
+  }

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import AddTodoForm from "../AddTodo/AddTodoForm";
 import TodoList from "../TodoList/TodoList";
 import { url } from "../../modules/api.module";
+import "/src/App.css";
+import style from './TodoContainer.module.css'
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -24,8 +26,8 @@ function TodoContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [isAscending, setIsAscending] = useState(true);
-  const [isTitleAscending, setIsTitleAscending] = useState(true);
   const debouncedSearchValue = useDebounce(searchValue, 500);
+  const [sort, setSort] = useState({"field": "createdTime", "direction": "asc"});
 
   const fetchData = async (search = "") => {
     const options = {
@@ -82,6 +84,29 @@ function TodoContainer() {
     }
   }, [debouncedSearchValue]);
 
+  useEffect(() => {
+    setTodoList(sortTodoList(todoList));
+  }, [sort.field, sort.direction]);
+
+    const sortTodoList = (list) => {
+      const sortedTodoList = [...list].sort((a, b) => {
+        if (sort.field === "title") {
+          const titleA = a.title.toLowerCase();
+          const titleB = b.title.toLowerCase();
+          if (titleA < titleB) return sort.direction === "asc" ? -1 : 1;
+          if (titleA > titleB) return sort.direction === "asc" ? 1 : -1;
+          return 0;
+        } else {
+          const titleA = a.createdTime.toLowerCase();
+          const titleB = b.createdTime.toLowerCase();
+          if (titleA < titleB) return sort.direction === "asc" ? -1 : 1;
+          if (titleA > titleB) return sort.direction === "asc" ? 1 : -1;
+          return 0;
+        }
+      });
+      return sortedTodoList;
+    }
+
   const addTodo = async (newTodo) => {
     const fields = {
       Title: newTodo.title
@@ -101,7 +126,6 @@ function TodoContainer() {
 
     try {
       const response = await fetch(url, options);
-      console.log({ response });
 
       if (!response.ok) {
         const message = `Error: ${response.status}`;
@@ -117,8 +141,9 @@ function TodoContainer() {
         dueDate: addTodoData.fields.dueDate,
       };
 
-      const updatedTodoList = [...todoList, newTodo];
+      let updatedTodoList = [...todoList, newTodo];
 
+      updatedTodoList = sortTodoList(updatedTodoList);
       setTodoList(updatedTodoList);
     } catch (error) {
       console.error("Error", error);
@@ -141,9 +166,10 @@ function TodoContainer() {
         throw new Error(message);
       }
 
-      const removeTodoList = todoList.filter((todoListItem) => {
+      let removeTodoList = todoList.filter((todoListItem) => {
         return todoListItem.id !== id;
       });
+      removeTodoList = sortTodoList(removeTodoList);
       setTodoList(removeTodoList);
     } catch (error) {
       console.error("Error", error);
@@ -221,42 +247,36 @@ function TodoContainer() {
   const handleSearch = (event) => {
     setSearchValue(event.target.value);
   };
-
-  const toggleOrder = () => {
-    setIsAscending(!isAscending);
-  };
-
-  const toggleTitleOrder = () => {
-    const sortedTodoList = [...todoList].sort((a, b) => {
-      const titleA = a.title.toLowerCase();
-      const titleB = b.title.toLowerCase();
-      if (titleA < titleB) return isTitleAscending ? -1 : 1;
-      if (titleA > titleB) return isTitleAscending ? 1 : -1;
-      return 0;
-    });
-    setTodoList(sortedTodoList);
-    setIsTitleAscending(!isTitleAscending);
+  const handleSortClick = (sortField) => {
+    if (sort.field === sortField) {
+      setSort({ field: sortField, direction: sort.direction === "asc" ? "desc" : "asc" });
+    } else {
+      setSort({ field: sortField, direction: "asc" });
+    }
   }
 
   return (
-    <>
+    <div className={style["container"]}>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
         <>
+        <div className={style["control-container"]}>
           <input
-            className="search-input"
+            className={style["search-input"]}
             type="search"
             onChange={handleSearch}
             value={searchValue}
-            placeholder="search"
+            placeholder="search your todo"
           />
-          <button onClick={toggleOrder}>
-            Sort by Date ({isAscending ? "Ascending" : "Descending"})
+          <button className={style["toggle-btn"]} onClick={() => handleSortClick("createdTime")}>
+            Sort by Date ({ sort.field === "createdTime" && sort.direction === "asc" ? <i className="fa-solid fa-arrow-up-short-wide"></i> : <i className="fa-solid fa-arrow-down-wide-short"></i>})
           </button>
-          <button onClick={toggleTitleOrder}>
-            Sort by name ({isTitleAscending ? "A-Z" : "Z-A"})
+          <button className={style["toggle-btn"]} onClick={() => handleSortClick("title")}>
+            Sort by name ({ sort.field === "title" && sort.direction === "asc" ? <i className="fa-solid fa-arrow-up-a-z"></i> : <i className="fa-solid fa-arrow-down-z-a"></i>})
           </button>
+        </div>
+          <AddTodoForm onAddTodo={addTodo} />
           <TodoList
             todoList={todoList}
             onRemoveTodo={removeTodo}
@@ -265,9 +285,9 @@ function TodoContainer() {
           />
         </>
       )}
-      <AddTodoForm onAddTodo={addTodo} />
-    </>
+    </div>
   );
 }
 
 export default TodoContainer;
+

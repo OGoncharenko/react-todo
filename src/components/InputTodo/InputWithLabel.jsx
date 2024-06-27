@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import PropTypes from 'prop-types';
+import "/src/App.css";
+import style from './InputWithLabel.module.css'
 
 const InputWithLabel = ({
   type = "text",
@@ -7,19 +9,19 @@ const InputWithLabel = ({
   name,
   value,
   onChange,
-  isFocused,
 }) => {
 
   const inputRef = useRef();
 
   return (
-    <input className="input-todo"
+    <input className={style["input-todo"]}
       ref={inputRef}
       type={type}
       id={id}
       value={value}
       name={name}
       onChange={onChange}
+      placeholder="write your todo"
     />
   );
 };
